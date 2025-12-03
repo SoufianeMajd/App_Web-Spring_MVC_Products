@@ -41,10 +41,13 @@ Whether you are an administrator managing stock or a user browsing the catalog, 
 
 ## 📸 Screenshots
 
-| Product List | Edit Product |
-|:---:|:---:|
-| *List view with pagination and search* | *Modern form with validation* |
-| ![List](https://via.placeholder.com/400x200?text=Product+List+View) | ![Edit](https://via.placeholder.com/400x200?text=Edit+Product+Form) |
+![Product List](screenshots/ui_preview.png)
+*Figure 1: Product List View with Pagination and Search*
+
+## 🏗️ Architecture
+
+![Architecture](screenshots/architecture.png)
+*Figure 2: Spring MVC Architecture*
 
 ## 🚀 Getting Started
 

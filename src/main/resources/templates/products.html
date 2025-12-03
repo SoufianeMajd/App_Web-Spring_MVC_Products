@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layout.html}">
+
+<head>
+    <!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security" layout:decorate="~{layout.html}">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Products List</title>
+
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+        <!-- SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+        <style>
+            /* Table Container */
+            .table-container {
+                background: white;
+                border-radius: 20px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+                overflow: hidden;
+                margin-bottom: 2rem;
+                border: 1px solid rgba(102, 126, 234, 0.1);
+                animation: fadeInUp 0.6s ease;
+            }
+
+            /* Modern Table Styles */
+            .custom-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                margin-bottom: 0;
+            }
+
+            .custom-table thead th {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 0.75rem 1rem;
+                /* Reduced padding */
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                /* Reduced font size */
+                letter-spacing: 0.5px;
+                border: none;
+                white-space: nowrap;
+            }
+
+            .custom-table thead th:first-child {
+                padding-left: 2rem;
+            }
+
+            .custom-table tbody tr {
+                transition: all 0.3s ease;
+                border-bottom: 1px solid #edf2f7;
+            }
+
+            .custom-table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            .custom-table tbody tr:hover {
+                background-color: #f8fafc;
+                transform: scale(1.005);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                z-index: 10;
+                position: relative;
+            }
+
+            .custom-table td {
+                padding: 0.75rem 1rem;
+                /* Reduced padding */
+                vertical-align: middle;
+                color: #4a5568;
+                font-weight: 500;
+                border-bottom: 1px solid #edf2f7;
+            }
+
+            .custom-table td:first-child {
+                padding-left: 2rem;
+            }
+
+            /* ID Badge */
+            .id-badge {
+                background: #edf2f7;
+                color: #4a5568;
+                padding: 0.25rem 0.6rem;
+                /* Reduced padding */
+                border-radius: 8px;
+                font-weight: 700;
+                font-size: 0.8rem;
+            }
+
+            /* Product Name */
+            .product-name {
+                font-weight: 700;
+                color: #2d3748;
+                font-size: 0.95rem;
+                /* Reduced font size */
+            }
+
+            /* Price Tag */
+            .price-tag {
+                font-weight: 700;
+                color: #667eea;
+                font-size: 0.95rem;
+                /* Reduced font size */
+            }
+
+            /* Stock Badge */
+            .stock-badge {
+                padding: 0.25rem 0.6rem;
+                /* Reduced padding */
+                border-radius: 20px;
+                font-size: 0.7rem;
+                /* Reduced font size */
+                font-weight: 700;
+                text-transform: uppercase;
+            }
+
+            .stock-high {
+                background: rgba(72, 187, 120, 0.15);
+                color: #2f855a;
+            }
+
+            .stock-medium {
+                background: rgba(236, 201, 75, 0.15);
+                color: #b7791f;
+            }
+
+            .stock-low {
+                background: rgba(245, 101, 101, 0.15);
+                color: #c53030;
+            }
+
+            /* Action Buttons */
+            .action-btn {
+                width: 32px;
+                /* Reduced size */
+                height: 32px;
+                /* Reduced size */
+                border-radius: 8px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border: none;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                margin-right: 0.4rem;
+                color: white;
+                text-decoration: none;
+                font-size: 0.9rem;
+            }
+
+            .btn-edit-row {
+                background: linear-gradient(135deg, #ffd93d 0%, #f6b93b 100%);
+                box-shadow: 0 4px 10px rgba(255, 217, 61, 0.3);
+            }
+
+            .btn-delete-row {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                box-shadow: 0 4px 10px rgba(245, 87, 108, 0.3);
+            }
+
+            .btn-new-row {
+                background: linear-gradient(135deg, #42e695 0%, #3bb2b8 100%);
+                box-shadow: 0 4px 10px rgba(66, 230, 149, 0.3);
+            }
+
+            .action-btn:hover {
+                transform: translateY(-3px) rotate(5deg);
+                color: white;
+            }
+
+            .btn-edit-row:hover {
+                box-shadow: 0 8px 15px rgba(255, 217, 61, 0.4);
+            }
+
+            .btn-delete-row:hover {
+                box-shadow: 0 8px 15px rgba(245, 87, 108, 0.4);
+            }
+
+            .btn-new-row:hover {
+                box-shadow: 0 8px 15px rgba(66, 230, 149, 0.4);
+            }
+
+            /* Search Section */
+            .search-section {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 1.5rem;
+                /* Reduced margin */
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .search-box {
+                position: relative;
+                flex: 1;
+                max-width: 450px;
+            }
+
+            .search-input-modern {
+                width: 100%;
+                padding: 0.75rem 1.25rem;
+                /* Reduced padding */
+                padding-right: 11rem;
+                /* More space for three buttons */
+                border: 2px solid #e2e8f0;
+                border-radius: 12px;
+                font-size: 1rem;
+                /* Reduced font size */
+                font-weight: 500;
+                transition: all 0.3s ease;
+                background: white;
+                letter-spacing: 0.5px;
+            }
+
+            .search-input-modern:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+                outline: none;
+            }
+
+            .search-input-modern::placeholder {
+                color: #a0aec0;
+                font-weight: 400;
+            }
+
+            .search-btn-icon {
+                position: absolute;
+                right: 100px;
+                /* Adjusted position */
+                top: 50%;
+                transform: translateY(-50%);
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border: none;
+                width: 36px;
+                /* Reduced size */
+                height: 36px;
+                /* Reduced size */
+                border-radius: 10px;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .search-btn-icon:hover {
+                transform: translateY(-50%) scale(1.1);
+                box-shadow: 0 5px 12px rgba(102, 126, 234, 0.4);
+            }
+
+            .search-btn-icon i {
+                font-size: 1rem;
+            }
+
+            .reset-btn-icon {
+                position: absolute;
+                right: 55px;
+                /* Positioned between search and add */
+                top: 50%;
+                transform: translateY(-50%);
+                background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+                /* Light gradient */
+                border: none;
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                color: #555;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+            }
+
+            .reset-btn-icon:hover {
+                transform: translateY(-50%) scale(1.1);
+                box-shadow: 0 5px 12px rgba(168, 237, 234, 0.4);
+                color: #333;
+            }
+
+            .reset-btn-icon i {
+                font-size: 1rem;
+            }
+
+            .add-btn-icon {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: linear-gradient(135deg, #42e695 0%, #3bb2b8 100%);
+                border: none;
+                width: 36px;
+                /* Reduced size */
+                height: 36px;
+                /* Reduced size */
+                border-radius: 10px;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+            }
+
+            .add-btn-icon:hover {
+                transform: translateY(-50%) scale(1.1);
+                box-shadow: 0 5px 12px rgba(66, 230, 149, 0.4);
+                color: white;
+            }
+
+            .add-btn-icon i {
+                font-size: 1rem;
+            }
+
+            /* Pagination Modern */
+            .pagination-container {
+                padding: 1rem;
+                /* Reduced padding */
+                border-top: 1px solid #edf2f7;
+                display: flex;
+                justify-content: center;
+            }
+
+            .page-link-modern {
+                width: 36px;
+                /* Reduced size */
+                height: 36px;
+                /* Reduced size */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
+                margin: 0 0.25rem;
+                font-weight: 600;
+                color: #4a5568;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                background: #f7fafc;
+                border: 1px solid #edf2f7;
+                font-size: 0.9rem;
+            }
+
+            .page-link-modern:hover,
+            .page-link-modern.active {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-color: transparent;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+            }
+        </style>
+    </head>
+
+<body>
+    <div layout:fragment="content1">
+        <div class="container py-3"> <!-- Reduced padding -->
+            <!-- Header Section -->
+            <div class="d-flex justify-content-between align-items-center mb-3 animate-in"> <!-- Reduced margin -->
+                <div>
+                    <h1 class="fw-bold"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-size: 2rem;">
+                        <!-- Reduced font size -->
+                        Product List
+                    </h1>
+                    <p class="text-muted mb-0 small">Manage your inventory efficiently</p>
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <div class="search-section animate-in" style="animation-delay: 0.1s;">
+                <form method="get" th:action="@{/index}" class="search-box">
+                    <input type="text" class="search-input-modern" name="keyword" th:value="${keyword}"
+                        placeholder="Find your product...">
+                    <button type="submit" class="search-btn-icon" title="Search">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <a th:href="@{/index}" class="reset-btn-icon" title="Show All Products">
+                        <i class="bi bi-list-ul"></i>
+                    </a>
+                    <a th:href="@{/formProduct}" class="add-btn-icon" title="New Product">
+                        <i class="bi bi-plus-lg"></i>
+                    </a>
+                </form>
+            </div>
+
+            <!-- Table Section -->
+            <div class="table-container animate-in" style="animation-delay: 0.2s;">
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Product Name</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p:${listProducts}">
+                                <td>
+                                    <span class="id-badge" th:text="'#' + ${p.id}">#1</span>
+                                </td>
+                                <td>
+                                    <div class="product-name" th:text="${p.name}">Laptop HP</div>
+                                </td>
+                                <td>
+                                    <span class="price-tag" th:text="'$' + ${p.price}">$4000</span>
+                                </td>
+                                <td>
+                                    <span th:if="${p.quantity > 10}" class="stock-badge stock-high">In Stock</span>
+                                    <span th:if="${p.quantity > 0 && p.quantity <= 10}"
+                                        class="stock-badge stock-medium">Low Stock</span>
+                                    <span th:if="${p.quantity == 0}" class="stock-badge stock-low">Out of Stock</span>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-dark" th:text="${p.quantity}">50</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/detailsProduct(id=${p.id}, keyword=${keyword}, page=${currentPage})}"
+                                        class="action-btn" title="Details"
+                                        style="background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); box-shadow: 0 4px 10px rgba(102, 166, 255, 0.3);">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </a>
+                                    <a th:href="@{/editProduct(id=${p.id}, keyword=${keyword}, page=${currentPage})}"
+                                        class="action-btn btn-edit-row" title="Edit">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <a th:href="@{/deleteProduct(id=${p.id}, keyword=${keyword}, page=${currentPage})}"
+                                        class="action-btn btn-delete-row btn-delete-confirm" title="Delete">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(listProducts)}">
+                                <td colspan="6" class="text-center py-5">
+                                    <i class="bi bi-box-seam text-muted mb-3" style="font-size: 3rem;"></i>
+                                    <p class="text-muted fw-bold">No products found</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container" th:if="${!#lists.isEmpty(listProducts)}">
+                    <a th:each="page,status:${pages}" th:href="@{/index(page=${status.index}, keyword=${keyword})}"
+                        th:text="${status.index + 1}"
+                        th:class="${status.index==currentPage?'page-link-modern active':'page-link-modern'}">
+                        1
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const deleteButtons = document.querySelectorAll('.btn-delete-confirm');
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const href = this.getAttribute('href');
+
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                text: "You won't be able to revert this!",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#f5576c',
+                                cancelButtonColor: '#cbd5e0',
+                                confirmButtonText: 'Yes, delete it!',
+                                cancelButtonText: 'Cancel',
+                                background: '#fff',
+                                borderRadius: '20px',
+                                customClass: {
+                                    popup: 'rounded-4 shadow-lg',
+                                    confirmButton: 'btn btn-danger rounded-pill px-4',
+                                    cancelButton: 'btn btn-secondary rounded-pill px-4 ms-2'
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = href;
+                                }
+                            });
+                        } else {
+                            if (confirm('Are you sure you want to delete this product?')) {
+                                window.location.href = href;
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
+    </div>
+</body>
+
+</html>

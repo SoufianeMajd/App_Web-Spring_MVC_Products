@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout.html}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Product</title>
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: #718096;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+        }
+
+        .form-control:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+            outline: none;
+            background: white;
+        }
+
+        .form-control.is-invalid {
+            border-color: #f5576c;
+            background: #fff5f5;
+        }
+
+        .text-danger {
+            color: #f5576c;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: block;
+            font-weight: 500;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-cancel {
+            width: 100%;
+            background: #e2e8f0;
+            border: none;
+            color: #4a5568;
+            padding: 0.875rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-top: 0.75rem;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .btn-cancel:hover {
+            background: #cbd5e0;
+            color: #2d3748;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+
+        .input-icon .form-control {
+            padding-left: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content1">
+        <div class="container py-5">
+            <div class="form-container">
+                <div class="form-card">
+                    <div class="form-header">
+                        <h1 class="form-title">
+                            <i class="fas fa-edit me-2"></i>Edit Product
+                        </h1>
+                        <p class="form-subtitle">Update product information</p>
+                    </div>
+
+                    <form method="post" th:action="@{/save}" th:object="${product}">
+                        <!-- Hidden fields to preserve state -->
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" name="page" th:value="${page}">
+                        <input type="hidden" name="keyword" th:value="${keyword}">
+
+                        <div class="form-group">
+                            <label class="form-label">Product Name</label>
+                            <div class="input-icon">
+                                <i class="fas fa-tag"></i>
+                                <input class="form-control" type="text" th:field="*{name}"
+                                    th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                    placeholder="Enter product name">
+                            </div>
+                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Price</label>
+                            <div class="input-icon">
+                                <i class="fas fa-dollar-sign"></i>
+                                <input class="form-control" type="text" th:field="*{price}"
+                                    th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''"
+                                    placeholder="0.00">
+                            </div>
+                            <span th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Quantity</label>
+                            <div class="input-icon">
+                                <i class="fas fa-boxes"></i>
+                                <input class="form-control" type="text" th:field="*{quantity}"
+                                    th:classappend="${#fields.hasErrors('quantity')} ? 'is-invalid' : ''"
+                                    placeholder="0">
+                            </div>
+                            <span th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"
+                                class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-save me-2"></i>Update Product
+                        </button>
+
+                        <a th:href="@{/index(page=${page}, keyword=${keyword})}" class="btn-cancel">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

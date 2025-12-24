@@ -41,11 +41,14 @@ Whether you are an administrator managing stock or a user browsing the catalog, 
 
 ## 📸 Screenshots
 
-![Product List](screenshots/ui_preview.png)
-*Figure 1: Product List View with Pagination and Search*
+![Login Page](screenshots/login.png)
+*Figure 1: Secure Login Interface*
 
-![Login Page](screenshots/login_ui.png)
-*Figure 2: Modern Login Interface*
+![Signup Page](screenshots/signup.png)
+*Figure 2: User Registration Page*
+
+![Product List](screenshots/products.png)
+*Figure 3: Product Inventory Management*
 
 ## 🏗️ Architecture
 

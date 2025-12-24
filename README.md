@@ -53,7 +53,7 @@ Whether you are an administrator managing stock or a user browsing the catalog, 
 ## 🏗️ Architecture
 
 ![Architecture](screenshots/architecture.png)
-*Figure 2: Spring MVC Architecture*
+*Figure 4: Spring MVC Architecture*
 
 ## 🚀 Getting Started
 

@@ -44,6 +44,9 @@ Whether you are an administrator managing stock or a user browsing the catalog, 
 ![Product List](screenshots/ui_preview.png)
 *Figure 1: Product List View with Pagination and Search*
 
+![Login Page](screenshots/login_ui.png)
+*Figure 2: Modern Login Interface*
+
 ## 🏗️ Architecture
 
 ![Architecture](screenshots/architecture.png)
